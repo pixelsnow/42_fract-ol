@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/02 22:22:09 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/02 22:23:44 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void draw_square(t_data *img, int x, int y)
 		j = 0;
 		while (j < 100)
 		{
-			my_mlx_pixel_put (img, i + x, j + y, rgb_to_int(100 + i, 100 - j, 100 + j));
+			my_mlx_pixel_put (img, i + x, j + y, rgb_to_int(100 + i % 10, 100 - j % 10, 100 + j % 10));
 			j++;
 		}
 		i++;
