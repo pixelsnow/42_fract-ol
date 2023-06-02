@@ -6,7 +6,7 @@
 #    By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/02 20:54:01 by vvagapov          #+#    #+#              #
-#    Updated: 2023/06/02 21:10:12 by vvagapov         ###   ########.fr        #
+#    Updated: 2023/06/02 21:20:12 by vvagapov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,12 +21,12 @@ LIBFTDIR = libft
 
 FLAGS = -Wall -Wextra -Werror
 INC = -I /usr/local/include
-LMX = -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit
+MLX = -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	cc $(INC) $(SRC) $(LMX) -o $(NAME)
+	cc $(INC) $(SRC) $(MLX) -o $(NAME)
 
 %.o: %.c
 	cc -c $(FLAGS) $^
