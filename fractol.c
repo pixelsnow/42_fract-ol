@@ -6,20 +6,11 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/02 22:27:02 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/02 22:29:35 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx.h>
-#include <unistd.h>
-
-typedef struct	s_data {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}				t_data;
+#include "fractol.h"
 
 void	print_binary(int n)
 {
@@ -93,7 +84,6 @@ void draw_square(t_data *img, int x, int y)
 		}
 		i++;
 	}
-	
 }
 
 int main(void)
