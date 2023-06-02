@@ -6,12 +6,20 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/02 21:50:25 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/02 22:14:02 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mlx.h>
 #include <unistd.h>
+
+typedef struct	s_data {
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}				t_data;
 
 void	print_binary(int n)
 {
@@ -61,21 +69,31 @@ int	rgb_to_int(int r, int g, int b)
 	return (res);
 }
 
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
+}
+
 int main(void)
 {
 	void	*mlx_ptr;
 	void	*win_ptr;
-	int		pixel;
+	t_data	img;
 	int		colour;
 
 	mlx_ptr = mlx_init(); // identifier of the connection to the graphics server
 	win_ptr = mlx_new_window(mlx_ptr, 300, 300, "test"); // will need this when we need to draw
-	
-	colour = rgb_to_int(200, 0, 100);
-	print_binary(200);
-	print_binary(100);
+	img.img = mlx_new_image(mlx_ptr, 300, 300);
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
+								&img.endian);
+
+	colour = rgb_to_int(200, 200, 55);
 	print_binary(colour);
-	pixel = mlx_pixel_put (mlx_ptr, win_ptr, 100, 100, colour);
+	my_mlx_pixel_put (&img, 100, 100, colour);
+	mlx_put_image_to_window(mlx_ptr, win_ptr, img.img, 0, 0);
 	mlx_loop(mlx_ptr); // draws, opens the window, manages events
 	return (0);
 }
