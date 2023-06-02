@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/02 22:14:02 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/02 22:19:55 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,22 +77,41 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
+void draw_square(t_data *img, int x, int y)
+{
+	int		colour;
+	int	i;
+	int	j;
+
+	colour = rgb_to_int(200, 200, 55);
+	print_binary(colour);
+
+	i = 0;
+	while (i < 100)
+	{
+		j = 0;
+		while (j < 100)
+		{
+			my_mlx_pixel_put (img, i + x, j + y, colour);
+			j++;
+		}
+		i++;
+	}
+	
+}
+
 int main(void)
 {
 	void	*mlx_ptr;
 	void	*win_ptr;
 	t_data	img;
-	int		colour;
 
 	mlx_ptr = mlx_init(); // identifier of the connection to the graphics server
 	win_ptr = mlx_new_window(mlx_ptr, 300, 300, "test"); // will need this when we need to draw
 	img.img = mlx_new_image(mlx_ptr, 300, 300);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								&img.endian);
-
-	colour = rgb_to_int(200, 200, 55);
-	print_binary(colour);
-	my_mlx_pixel_put (&img, 100, 100, colour);
+	draw_square(&img, 100, 100);
 	mlx_put_image_to_window(mlx_ptr, win_ptr, img.img, 0, 0);
 	mlx_loop(mlx_ptr); // draws, opens the window, manages events
 	return (0);
