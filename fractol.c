@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/02 22:25:10 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/02 22:27:02 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,12 @@ void draw_square(t_data *img, int x, int y)
 	int	j;
 
 	i = 0;
-	while (i < 100)
+	while (i < 300)
 	{
 		j = 0;
-		while (j < 100)
+		while (j < 300)
 		{
-			my_mlx_pixel_put (img, i + x, j + y, rgb_to_int(100 + i, 100 + j, 100 + j + i / 2));
+			my_mlx_pixel_put (img, i + x, j + y, rgb_to_int(100 + i / 2, 100 + j / 2, 100 + j / 4 + i / 4));
 			j++;
 		}
 		i++;
@@ -107,7 +107,7 @@ int main(void)
 	img.img = mlx_new_image(mlx_ptr, 300, 300);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								&img.endian);
-	draw_square(&img, 100, 100);
+	draw_square(&img, 0, 0);
 	mlx_put_image_to_window(mlx_ptr, win_ptr, img.img, 0, 0);
 	mlx_loop(mlx_ptr); // draws, opens the window, manages events
 	return (0);
