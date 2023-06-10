@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/10 19:59:11 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/10 20:00:50 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ int	count_iterations_to_escape(int	iterations, t_complex c)
 	return (0);
 }
 
-int	get_colour_by_iteration(int	iterations, int iteration_count)
+int	get_colour(int	iterations, int iteration_count)
 {
 	return rgb_to_int(255 / iterations * (iterations - iteration_count), 255 / iterations * (iterations - iteration_count), 255 / iterations * (iterations - iteration_count));
 }
@@ -166,14 +166,14 @@ void	draw_mandelbrot(t_data *img, int	iterations)
 			c.re = min.re + x * scale.re;
 			escape_count = count_iterations_to_escape(iterations, c);
 			if (escape_count)
-				my_mlx_pixel_put(img, x, y, get_colour_by_iteration(iterations, escape_count));
+				my_mlx_pixel_put(img, x, y, get_colour(iterations, escape_count));
 			x++;
 		}
 		y++;
 	}
 }
 
-int		close_hook(int button, t_vars *v)
+int	close_hook(int button, t_vars *v)
 {
 	(void)button;
 	(void)v;
@@ -184,7 +184,7 @@ void	init_fractol(t_fractol	*fractol)
 {
 	fractol->mlx_ptr = mlx_init(); // identifier of the connection to the graphics server
 	fractol->win_ptr = mlx_new_window(fractol->mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "test"); // will need this when we need to draw
-	mlx_hook(fractol->win_ptr, 17, 0, close_hook, &fractol);
+	mlx_hook(fractol->win_ptr, 17, 0, close_hook, &fractol); // weird magic
 	fractol->img.img = mlx_new_image(fractol->mlx_ptr, WIN_WIDTH, WIN_HEIGHT);
 	fractol->img.addr = mlx_get_data_addr(fractol->img.img, &fractol->img.bits_per_pixel, &fractol->img.line_length,
 								&fractol->img.endian);

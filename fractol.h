@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/10 19:58:19 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/10 19:59:55 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,6 @@ typedef struct	s_fractol {
 	t_data	img;
 	void	*mlx_ptr;
 	void	*win_ptr;
-}				t_fractol; */
+}				t_mandelbrot; */
 
 #endif
