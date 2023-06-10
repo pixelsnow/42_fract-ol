@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/10 19:06:29 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/10 19:59:11 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,25 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
+
+void fill(t_data *img)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < WIN_WIDTH)
+	{
+		j = 0;
+		while (j < WIN_HEIGHT)
+		{
+			my_mlx_pixel_put (img, i, j, rgb_to_int(255, 255, 255));
+			j++;
+		}
+		i++;
+	}
+}
+
 void draw_square(t_data *img, int x, int y)
 {
 	int	i;
@@ -92,24 +111,26 @@ void draw_square(t_data *img, int x, int y)
 	}
 }
 
-int	iterations_to_exit(double *z_r, double *z_i, int	iterations, double c_r, double c_i)
+int	count_iterations_to_escape(int	iterations, t_complex c)
 {
-	int		iteration;
-	double	z_r2;
-	double	z_i2;
+	int			iter;
+	t_complex	z;
+	t_complex	z_parts_sq;
 
-	iteration = 0;
-	while (iteration < iterations)
+	z.re = c.re;
+	z.im = c.im;
+	iter = 0;
+	while (iter < iterations)
 	{
-		z_r2 = *z_r * *z_r;
-		z_i2 = *z_i * *z_i;
-		if (z_r2 + z_i2 > 4)
+		z_parts_sq.re = z.re * z.re;
+		z_parts_sq.im = z.im * z.im;
+		if (z_parts_sq.re + z_parts_sq.im > 4)
 		{
-			return (iteration);
+			return (iter);
 		}
-		*z_i = 2 * *z_r * *z_i + c_i;
-		*z_r = z_r2 - z_i2 + c_r;
-		iteration++;
+		z.im = 2 * z.re * z.im + c.im;
+		z.re = z_parts_sq.re - z_parts_sq.im + c.re;
+		iter++;
 	}
 	return (0);
 }
@@ -121,49 +142,49 @@ int	get_colour_by_iteration(int	iterations, int iteration_count)
 
 void	draw_mandelbrot(t_data *img, int	iterations)
 {
-	double	min_r;
-	double	max_r;
-	double	min_i;
-	double	max_i;
-	double	scale_r;
-	double	scale_i;
 	int		y;
 	int		x;
-	double	z_r;
-	double	z_i;
-	double	c_r;
-	double	c_i;
-	int		iteration_count;
+	int		escape_count;
+	t_complex	c;
+	t_complex	min;
+	t_complex	max;
+	t_complex	scale;
 
-	min_r = -2.0;
-	max_r = 2.0;
-	min_i = - (max_r - min_r) / 2 * WIN_WIDTH / WIN_HEIGHT;
-	max_i = min_i + (max_r - min_r) * WIN_HEIGHT / WIN_WIDTH;
-	scale_r = (max_r - min_r) / (WIN_WIDTH - 1);
-	scale_i = (max_i - min_i) / (WIN_HEIGHT - 1);
+	min.re = -2.0;
+	max.re = 1;
+	min.im = - (max.re - min.re) / 2 * WIN_HEIGHT / WIN_WIDTH;
+	max.im = min.im + (max.re - min.re) * WIN_HEIGHT / WIN_WIDTH;
+	scale.re = (max.re - min.re) / (WIN_WIDTH - 1);
+	scale.im = (max.im - min.im) / (WIN_HEIGHT - 1);
 	y = 0;
 	while (y < WIN_HEIGHT)
 	{
-		c_i = max_i - y * scale_i;
+		c.im = max.im - y * scale.im;
 		x = 0;
 		while (x < WIN_WIDTH)
 		{
-			c_r = min_r + x * scale_r;
-			z_r = c_r;
-			z_i = c_i;
-			iteration_count = iterations_to_exit(&z_r, &z_i, iterations, c_r, c_i);
-			if (iteration_count)
-				my_mlx_pixel_put(img, x, y, get_colour_by_iteration(iterations, iteration_count));
+			c.re = min.re + x * scale.re;
+			escape_count = count_iterations_to_escape(iterations, c);
+			if (escape_count)
+				my_mlx_pixel_put(img, x, y, get_colour_by_iteration(iterations, escape_count));
 			x++;
 		}
 		y++;
 	}
 }
 
+int		close_hook(int button, t_vars *v)
+{
+	(void)button;
+	(void)v;
+	exit(0);
+}
+
 void	init_fractol(t_fractol	*fractol)
 {
 	fractol->mlx_ptr = mlx_init(); // identifier of the connection to the graphics server
 	fractol->win_ptr = mlx_new_window(fractol->mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "test"); // will need this when we need to draw
+	mlx_hook(fractol->win_ptr, 17, 0, close_hook, &fractol);
 	fractol->img.img = mlx_new_image(fractol->mlx_ptr, WIN_WIDTH, WIN_HEIGHT);
 	fractol->img.addr = mlx_get_data_addr(fractol->img.img, &fractol->img.bits_per_pixel, &fractol->img.line_length,
 								&fractol->img.endian);
