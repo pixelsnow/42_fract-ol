@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/07 19:42:31 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/10 13:13:36 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	char	*dst;
 
 	if (x < 0 || x >= WIN_WIDTH || y < 0 || y >= WIN_HEIGHT)
+		return;
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
 	*(unsigned int*)dst = color;
 }
@@ -94,8 +95,8 @@ int main(void)
 	t_data	img;
 
 	mlx_ptr = mlx_init(); // identifier of the connection to the graphics server
-	win_ptr = mlx_new_window(mlx_ptr, 300, 300, "test"); // will need this when we need to draw
-	img.img = mlx_new_image(mlx_ptr, 300, 300);
+	win_ptr = mlx_new_window(mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "test"); // will need this when we need to draw
+	img.img = mlx_new_image(mlx_ptr, WIN_WIDTH, WIN_HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								&img.endian);
 	draw_square(&img, 0, 0);
