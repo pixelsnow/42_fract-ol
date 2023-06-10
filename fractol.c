@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/10 18:50:19 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/10 19:06:29 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,16 +160,20 @@ void	draw_mandelbrot(t_data *img, int	iterations)
 	}
 }
 
+void	init_fractol(t_fractol	*fractol)
+{
+	fractol->mlx_ptr = mlx_init(); // identifier of the connection to the graphics server
+	fractol->win_ptr = mlx_new_window(fractol->mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "test"); // will need this when we need to draw
+	fractol->img.img = mlx_new_image(fractol->mlx_ptr, WIN_WIDTH, WIN_HEIGHT);
+	fractol->img.addr = mlx_get_data_addr(fractol->img.img, &fractol->img.bits_per_pixel, &fractol->img.line_length,
+								&fractol->img.endian);
+}
+
 int main(void)
 {
 	t_fractol	fractol;
 
-	fractol.mlx_ptr = mlx_init(); // identifier of the connection to the graphics server
-	fractol.win_ptr = mlx_new_window(fractol.mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "test"); // will need this when we need to draw
-	fractol.img.img = mlx_new_image(fractol.mlx_ptr, WIN_WIDTH, WIN_HEIGHT);
-	fractol.img.addr = mlx_get_data_addr(fractol.img.img, &fractol.img.bits_per_pixel, &fractol.img.line_length,
-								&fractol.img.endian);
-	//draw_square(&fractol.img, 0, 0);
+	init_fractol(&fractol);
 	draw_mandelbrot(&fractol.img, 50);
 	mlx_put_image_to_window(fractol.mlx_ptr, fractol.win_ptr, fractol.img.img, 0, 0);
 	mlx_loop(fractol.mlx_ptr); // draws, opens the window, manages events
