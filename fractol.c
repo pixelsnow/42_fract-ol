@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/11 18:03:02 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/11 19:31:32 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,25 +142,24 @@ int	count_iterations_to_escape(int iterations, t_complex c)
 	return (0);
 }
 
-int	count_iterations_julia(int iterations, t_complex c)
+int	count_iterations_julia(int iterations, t_complex k, t_complex c)
 {
 	int			iter;
 	t_complex	z;
 	t_complex	z_parts_sq;
 
-	z.re = c.re;
-	z.im = c.im;
+	z = init_complex(c.re, c.im);
 	iter = 0;
 	while (iter < iterations)
 	{
-		z_parts_sq.re = z.re * z.re;
-		z_parts_sq.im = z.im * z.im;
+		z_parts_sq = init_complex(z.re * z.re, z.im * z.im);
+		//printf("%f\n", z_parts_sq.re + z_parts_sq.im);
 		if (z_parts_sq.re + z_parts_sq.im > 4)
 		{
 			return (iter);
 		}
-		z.im = 2 * z.re * z.im + c.im;
-		z.re = z_parts_sq.re - z_parts_sq.im + c.re;
+		z.im = 2 * z.re * z.im + k.im;
+		z.re = z_parts_sq.re - z_parts_sq.im + k.re;
 		iter++;
 	}
 	return (0);
@@ -173,44 +172,58 @@ int	get_colour(int iterations, int iteration_count)
 			255 / iterations * iteration_count));
 }
 
-/* 
+void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
+{
+	min->re = -2.0;
+	max->re = 1.0;
+	min->im = - (max->re - min->re) / 2 * HEIGHT / WIDTH;
+	max->im = min->im + (max->re - min->re) * HEIGHT / WIDTH;
+	scale->re = (max->re - min->re) / (WIDTH - 1);
+	scale->im = (max->im - min->im) / (HEIGHT - 1);
+}
+
+void	set_julia_limits(t_complex *min, t_complex *max, t_complex *scale)
+{
+	min->re = -2.0;
+	max->re = 2.0;
+	min->im = - (max->re - min->re) / 2 * HEIGHT / WIDTH;
+	max->im = min->im + (max->re - min->re) * HEIGHT / WIDTH;
+	scale->re = (max->re - min->re) / (WIDTH - 1);
+	scale->im = (max->im - min->im) / (HEIGHT - 1);
+}
+
 void	draw_julia(t_data *img, int	iterations, t_complex k)
 {
 	int		y;
 	int		x;
 	int		escape_count;
+	t_complex	c;
 	t_complex	min;
 	t_complex	max;
 	t_complex	scale;
 
-	min.re = -2.0;
-	max.re = 1;
-	min.im = - (max.re - min.re) / 2 * HEIGHT / WIDTH;
-	max.im = min.im + (max.re - min.re) * HEIGHT / WIDTH;
-	scale.re = (max.re - min.re) / (WIDTH - 1);
-	scale.im = (max.im - min.im) / (HEIGHT - 1);
+	set_julia_limits(&min, &max, &scale);
 	y = 0;
 	while (y < HEIGHT)
 	{
+		c.im = max.im - y * scale.im;
 		x = 0;
 		while (x < WIDTH)
 		{
-			escape_count = count_iterations_julia(iterations, k);
+			c.re = min.re + x * scale.re;
+			k = init_complex(
+    			(double)x / WIDTH - 0.5,
+    			(double)(HEIGHT - y) / HEIGHT - 0.5);
+			escape_count = count_iterations_julia(iterations, k, c);
 			if (escape_count)
+			{
+				//printf("%i\n", escape_count);
 				my_mlx_pixel_put(img, x, y, get_colour(iterations, escape_count));
+			}
 			x++;
 		}
 		y++;
 	}
-} */
-void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
-{
-	min->re = -2.0;
-	max->re = 1;
-	min->im = - (max->re - min->re) / 2 * HEIGHT / WIDTH;
-	max->im = min->im + (max->re - min->re) * HEIGHT / WIDTH;
-	scale->re = (max->re - min->re) / (WIDTH - 1);
-	scale->im = (max->im - min->im) / (HEIGHT - 1);
 }
 
 void	draw_mandelbrot(t_data *img, int iterations)
@@ -227,7 +240,7 @@ void	draw_mandelbrot(t_data *img, int iterations)
 	y = 0;
 	while (y < HEIGHT)
 	{
-		c.im = max.im - y * scale.im;
+		c.im = max.im - y * scale.im; // converting coordinates to c
 		x = 0;
 		while (x < WIDTH)
 		{
@@ -268,9 +281,9 @@ int	main(void)
 	t_complex	k;
 
 	init_fractol(&fractol);
-	draw_mandelbrot(&fractol.img, 50);
-	k = init_complex(0.353, 0.288);
-	//draw_julia(&fractol.img, 50, k);
+	//draw_mandelbrot(&fractol.img, 50);
+	k = init_complex(0.33, 0.395);
+	draw_julia(&fractol.img, 50, k);
 	mlx_put_image_to_window(fractol.mlx, fractol.win, fractol.img.img, 0, 0);
 	mlx_loop(fractol.mlx); // draws, opens the window, manages events
 	return (0);
