@@ -6,20 +6,20 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/11 17:38:04 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/11 18:03:02 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 #include <stdio.h>
 
-t_complex init_complex(double re, double im)
+t_complex	init_complex(double re, double im)
 {
-    t_complex res;
-    
-    res.re = re;
-    res.im = im;
-    return (res);
+	t_complex	res;
+
+	res.re = re;
+	res.im = im;
+	return (res);
 }
 
 void	print_binary(int n)
@@ -43,8 +43,8 @@ void	print_binary(int n)
 int	rgb_to_int(int r, int g, int b)
 {
 	int	bit;
-	int res;
-	
+	int	res;
+
 	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
 		return (0);
 	res = 0;
@@ -54,7 +54,6 @@ int	rgb_to_int(int r, int g, int b)
 		res |= (r & (1 << bit)) << 16;
 		bit--;
 	}
-
 	bit = 7;
 	while (bit >= 0)
 	{
@@ -77,23 +76,22 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	/* printf("Pixel to: x = %i, y = %i, color = ", x, y);
 	print_binary(color);
 	printf("\n"); */
-	if (x < 0 || x >= WIN_WIDTH || y < 0 || y >= WIN_HEIGHT)
-		return;
+	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+		return ;
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
+	*(unsigned int *)dst = color;
 }
 
-
-void fill(t_data *img)
+void	fill(t_data *img)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < WIN_WIDTH)
+	while (i < WIDTH)
 	{
 		j = 0;
-		while (j < WIN_HEIGHT)
+		while (j < HEIGHT)
 		{
 			my_mlx_pixel_put (img, i, j, rgb_to_int(255, 255, 255));
 			j++;
@@ -102,7 +100,7 @@ void fill(t_data *img)
 	}
 }
 
-void draw_square(t_data *img, int x, int y)
+void	draw_square(t_data *img, int x, int y)
 {
 	int	i;
 	int	j;
@@ -113,14 +111,15 @@ void draw_square(t_data *img, int x, int y)
 		j = 0;
 		while (j < 30)
 		{
-			my_mlx_pixel_put (img, i + x, j + y, rgb_to_int(100 + i / 4, 100 + j / 4, 100 + j / 8 + i / 8));
+			my_mlx_pixel_put (img, i + x, j + y,
+				rgb_to_int(100 + i / 4, 100 + j / 4, 100 + j / 8 + i / 8));
 			j++;
 		}
 		i++;
 	}
 }
 
-int	count_iterations_to_escape(int	iterations, t_complex c)
+int	count_iterations_to_escape(int iterations, t_complex c)
 {
 	int			iter;
 	t_complex	z;
@@ -143,7 +142,7 @@ int	count_iterations_to_escape(int	iterations, t_complex c)
 	return (0);
 }
 
-int	count_iterations_julia(int	iterations, t_complex c)
+int	count_iterations_julia(int iterations, t_complex c)
 {
 	int			iter;
 	t_complex	z;
@@ -167,11 +166,14 @@ int	count_iterations_julia(int	iterations, t_complex c)
 	return (0);
 }
 
-int	get_colour(int	iterations, int iteration_count)
+int	get_colour(int iterations, int iteration_count)
 {
-	return rgb_to_int(255 / iterations * iteration_count, 255 / iterations * iteration_count, 255 / iterations * iteration_count);
+	return (rgb_to_int(255 / iterations * iteration_count,
+			255 / iterations * iteration_count,
+			255 / iterations * iteration_count));
 }
 
+/* 
 void	draw_julia(t_data *img, int	iterations, t_complex k)
 {
 	int		y;
@@ -183,15 +185,15 @@ void	draw_julia(t_data *img, int	iterations, t_complex k)
 
 	min.re = -2.0;
 	max.re = 1;
-	min.im = - (max.re - min.re) / 2 * WIN_HEIGHT / WIN_WIDTH;
-	max.im = min.im + (max.re - min.re) * WIN_HEIGHT / WIN_WIDTH;
-	scale.re = (max.re - min.re) / (WIN_WIDTH - 1);
-	scale.im = (max.im - min.im) / (WIN_HEIGHT - 1);
+	min.im = - (max.re - min.re) / 2 * HEIGHT / WIDTH;
+	max.im = min.im + (max.re - min.re) * HEIGHT / WIDTH;
+	scale.re = (max.re - min.re) / (WIDTH - 1);
+	scale.im = (max.im - min.im) / (HEIGHT - 1);
 	y = 0;
-	while (y < WIN_HEIGHT)
+	while (y < HEIGHT)
 	{
 		x = 0;
-		while (x < WIN_WIDTH)
+		while (x < WIDTH)
 		{
 			escape_count = count_iterations_julia(iterations, k);
 			if (escape_count)
@@ -200,21 +202,22 @@ void	draw_julia(t_data *img, int	iterations, t_complex k)
 		}
 		y++;
 	}
-}
+} */
 void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
 {
 	min->re = -2.0;
 	max->re = 1;
-	min->im = - (max->re - min->re) / 2 * WIN_HEIGHT / WIN_WIDTH;
-	max->im = min->im + (max->re - min->re) * WIN_HEIGHT / WIN_WIDTH;
-	scale->re = (max->re - min->re) / (WIN_WIDTH - 1);
-	scale->im = (max->im - min->im) / (WIN_HEIGHT - 1);
+	min->im = - (max->re - min->re) / 2 * HEIGHT / WIDTH;
+	max->im = min->im + (max->re - min->re) * HEIGHT / WIDTH;
+	scale->re = (max->re - min->re) / (WIDTH - 1);
+	scale->im = (max->im - min->im) / (HEIGHT - 1);
 }
-void	draw_mandelbrot(t_data *img, int	iterations)
+
+void	draw_mandelbrot(t_data *img, int iterations)
 {
-	int		y;
-	int		x;
-	int		escape_count;
+	int			y;
+	int			x;
+	int			escape_count;
 	t_complex	c;
 	t_complex	min;
 	t_complex	max;
@@ -222,16 +225,17 @@ void	draw_mandelbrot(t_data *img, int	iterations)
 
 	set_limits(&min, &max, &scale);
 	y = 0;
-	while (y < WIN_HEIGHT)
+	while (y < HEIGHT)
 	{
 		c.im = max.im - y * scale.im;
 		x = 0;
-		while (x < WIN_WIDTH)
+		while (x < WIDTH)
 		{
 			c.re = min.re + x * scale.re;
 			escape_count = count_iterations_to_escape(iterations, c);
 			if (escape_count)
-				my_mlx_pixel_put(img, x, y, get_colour(iterations, escape_count));
+				my_mlx_pixel_put(img, x, y, get_colour(iterations,
+						escape_count));
 			x++;
 		}
 		y++;
@@ -245,17 +249,20 @@ int	close_hook(int button, t_vars *v)
 	exit(0);
 }
 
-void	init_fractol(t_fractol	*fractol)
+void	init_fractol(t_fractol *fractol)
 {
-	fractol->mlx_ptr = mlx_init(); // identifier of the connection to the graphics server
-	fractol->win_ptr = mlx_new_window(fractol->mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "test"); // will need this when we need to draw
-	mlx_hook(fractol->win_ptr, 17, 0, close_hook, &fractol); // weird magic
-	fractol->img.img = mlx_new_image(fractol->mlx_ptr, WIN_WIDTH, WIN_HEIGHT);
-	fractol->img.addr = mlx_get_data_addr(fractol->img.img, &fractol->img.bits_per_pixel, &fractol->img.line_length,
-								&fractol->img.endian);
+	fractol->mlx = mlx_init();
+	// identifier of the connection to the graphics server
+	fractol->win = mlx_new_window(fractol->mlx, WIDTH, HEIGHT, "test");
+	// will need this when we need to draw
+	mlx_hook(fractol->win, 17, 0, close_hook, &fractol); // weird magic
+	fractol->img.img = mlx_new_image(fractol->mlx, WIDTH, HEIGHT);
+	fractol->img.addr = mlx_get_data_addr(fractol->img.img,
+			&fractol->img.bits_per_pixel, &fractol->img.line_length,
+			&fractol->img.endian);
 }
 
-int main(void)
+int	main(void)
 {
 	t_fractol	fractol;
 	t_complex	k;
@@ -264,7 +271,7 @@ int main(void)
 	draw_mandelbrot(&fractol.img, 50);
 	k = init_complex(0.353, 0.288);
 	//draw_julia(&fractol.img, 50, k);
-	mlx_put_image_to_window(fractol.mlx_ptr, fractol.win_ptr, fractol.img.img, 0, 0);
-	mlx_loop(fractol.mlx_ptr); // draws, opens the window, manages events
+	mlx_put_image_to_window(fractol.mlx, fractol.win, fractol.img.img, 0, 0);
+	mlx_loop(fractol.mlx); // draws, opens the window, manages events
 	return (0);
 }
