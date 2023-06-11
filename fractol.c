@@ -6,12 +6,21 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/10 20:00:50 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/11 17:38:04 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 #include <stdio.h>
+
+t_complex init_complex(double re, double im)
+{
+    t_complex res;
+    
+    res.re = re;
+    res.im = im;
+    return (res);
+}
 
 void	print_binary(int n)
 {
@@ -117,6 +126,29 @@ int	count_iterations_to_escape(int	iterations, t_complex c)
 	t_complex	z;
 	t_complex	z_parts_sq;
 
+	z = init_complex(c.re, c.im);
+	iter = 0;
+	while (iter < iterations)
+	{
+		z_parts_sq = init_complex(z.re * z.re, z.im * z.im);
+		if (z_parts_sq.re + z_parts_sq.im > 4)
+		{
+			// out of the circle with radius of 2
+			return (iter);
+		}
+		z.im = 2 * z.re * z.im + c.im;
+		z.re = z_parts_sq.re - z_parts_sq.im + c.re;
+		iter++;
+	}
+	return (0);
+}
+
+int	count_iterations_julia(int	iterations, t_complex c)
+{
+	int			iter;
+	t_complex	z;
+	t_complex	z_parts_sq;
+
 	z.re = c.re;
 	z.im = c.im;
 	iter = 0;
@@ -137,15 +169,14 @@ int	count_iterations_to_escape(int	iterations, t_complex c)
 
 int	get_colour(int	iterations, int iteration_count)
 {
-	return rgb_to_int(255 / iterations * (iterations - iteration_count), 255 / iterations * (iterations - iteration_count), 255 / iterations * (iterations - iteration_count));
+	return rgb_to_int(255 / iterations * iteration_count, 255 / iterations * iteration_count, 255 / iterations * iteration_count);
 }
 
-void	draw_mandelbrot(t_data *img, int	iterations)
+void	draw_julia(t_data *img, int	iterations, t_complex k)
 {
 	int		y;
 	int		x;
 	int		escape_count;
-	t_complex	c;
 	t_complex	min;
 	t_complex	max;
 	t_complex	scale;
@@ -156,6 +187,40 @@ void	draw_mandelbrot(t_data *img, int	iterations)
 	max.im = min.im + (max.re - min.re) * WIN_HEIGHT / WIN_WIDTH;
 	scale.re = (max.re - min.re) / (WIN_WIDTH - 1);
 	scale.im = (max.im - min.im) / (WIN_HEIGHT - 1);
+	y = 0;
+	while (y < WIN_HEIGHT)
+	{
+		x = 0;
+		while (x < WIN_WIDTH)
+		{
+			escape_count = count_iterations_julia(iterations, k);
+			if (escape_count)
+				my_mlx_pixel_put(img, x, y, get_colour(iterations, escape_count));
+			x++;
+		}
+		y++;
+	}
+}
+void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
+{
+	min->re = -2.0;
+	max->re = 1;
+	min->im = - (max->re - min->re) / 2 * WIN_HEIGHT / WIN_WIDTH;
+	max->im = min->im + (max->re - min->re) * WIN_HEIGHT / WIN_WIDTH;
+	scale->re = (max->re - min->re) / (WIN_WIDTH - 1);
+	scale->im = (max->im - min->im) / (WIN_HEIGHT - 1);
+}
+void	draw_mandelbrot(t_data *img, int	iterations)
+{
+	int		y;
+	int		x;
+	int		escape_count;
+	t_complex	c;
+	t_complex	min;
+	t_complex	max;
+	t_complex	scale;
+
+	set_limits(&min, &max, &scale);
 	y = 0;
 	while (y < WIN_HEIGHT)
 	{
@@ -193,9 +258,12 @@ void	init_fractol(t_fractol	*fractol)
 int main(void)
 {
 	t_fractol	fractol;
+	t_complex	k;
 
 	init_fractol(&fractol);
 	draw_mandelbrot(&fractol.img, 50);
+	k = init_complex(0.353, 0.288);
+	//draw_julia(&fractol.img, 50, k);
 	mlx_put_image_to_window(fractol.mlx_ptr, fractol.win_ptr, fractol.img.img, 0, 0);
 	mlx_loop(fractol.mlx_ptr); // draws, opens the window, manages events
 	return (0);
