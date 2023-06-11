@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/11 19:31:32 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/11 23:17:22 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,9 +281,9 @@ int	main(void)
 	t_complex	k;
 
 	init_fractol(&fractol);
-	//draw_mandelbrot(&fractol.img, 50);
+	draw_mandelbrot(&fractol.img, 50);
 	k = init_complex(0.33, 0.395);
-	draw_julia(&fractol.img, 50, k);
+	//draw_julia(&fractol.img, 50, k);
 	mlx_put_image_to_window(fractol.mlx, fractol.win, fractol.img.img, 0, 0);
 	mlx_loop(fractol.mlx); // draws, opens the window, manages events
 	return (0);
