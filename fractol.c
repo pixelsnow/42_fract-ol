@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/14 22:11:42 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/14 22:21:23 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,14 +267,16 @@ int	simple_mouse_hook(int code, t_vars *v)
 
 int	mouse_hook(int x, int y, int extra, t_fractol *fractol)
 {
-	t_complex	min;
+	/* t_complex	min;
 	t_complex	max;
-	t_complex	scale;
+	t_complex	scale; */
 
-	set_julia_limits(&min, &max, &scale);
-	/* fractol->k.re = 1;
-	fractol->k.im = 1; */
-	/* printf("%f %f\n", fractol->k.re, fractol->k.im);  */
+	// check limits
+	printf("%d %d\n", x, y); 
+	/* set_julia_limits(&min, &max, &scale);
+	fractol->k.re = min.re + x * scale.re;
+	fractol->k.im = max.im - y * scale.im;
+	printf("%f %f\n", fractol->k.re, fractol->k.im);  */
 	(void)x;
 	(void)y;
 	(void)extra;
@@ -288,9 +290,9 @@ void	init_fractol(t_fractol *fractol)
 	// identifier of the connection to the graphics server
 	fractol->win = mlx_new_window(fractol->mlx, WIDTH, HEIGHT, "test");
 	// will need this when we need to draw
-	mlx_hook(fractol->win, 17, 0, close_hook, &fractol); // weird magic
-	mlx_mouse_hook(fractol->win, simple_mouse_hook, &fractol);
-	mlx_hook(fractol->win, 6, 0, mouse_hook, &fractol);
+	mlx_hook(fractol->win, 17, 0, close_hook, fractol); // weird magic
+	mlx_mouse_hook(fractol->win, simple_mouse_hook, fractol);
+	mlx_hook(fractol->win, 6, 0, mouse_hook, fractol);
 	fractol->img.img = mlx_new_image(fractol->mlx, WIDTH, HEIGHT);
 	fractol->img.addr = mlx_get_data_addr(fractol->img.img,
 		&fractol->img.bits_per_pixel, &fractol->img.line_length,
@@ -306,6 +308,9 @@ int	main(void)
 	fractol.k = init_complex(0.33, 0.395);
 	draw_julia(&fractol.img, 50, fractol.k);
 	mlx_put_image_to_window(fractol.mlx, fractol.win, fractol.img.img, 0, 0);
+	/* mlx_hook(fractol.win, 17, 0, close_hook, &fractol); // weird magic
+	mlx_mouse_hook(fractol.win, simple_mouse_hook, &fractol);
+	mlx_hook(fractol.win, 6, 0, mouse_hook, &fractol); */
 	mlx_loop(fractol.mlx); // draws, opens the window, manages events
 	return (0);
 }
