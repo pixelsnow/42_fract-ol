@@ -6,15 +6,15 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/11 23:20:25 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/14 20:37:15 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-# define WIDTH 2560
-# define HEIGHT 1400
+# define WIDTH 1300
+# define HEIGHT 1300
 
 # include <mlx.h>
 # include <unistd.h>
