@@ -6,15 +6,15 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/14 20:37:15 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/14 21:59:06 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-# define WIDTH 1300
-# define HEIGHT 1300
+# define WIDTH 600
+# define HEIGHT 600
 
 # include <mlx.h>
 # include <unistd.h>
@@ -39,15 +39,10 @@ typedef struct s_complex {
 }				t_complex;
 
 typedef struct s_fractol {
-	t_data	img;
-	void	*mlx;
-	void	*win;
+	t_data		img;
+	void		*mlx;
+	void		*win;
+	t_complex	k;
 }				t_fractol;
-
-/* typedef struct s_mandelbrot {
-	t_data	img;
-	void	*mlx;
-	void	*win;
-}				t_mandelbrot; */
 
 #endif

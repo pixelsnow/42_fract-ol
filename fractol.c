@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/14 21:42:26 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/14 22:11:42 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,11 +265,20 @@ int	simple_mouse_hook(int code, t_vars *v)
 	return (0);
 }
 
-int	mouse_hook(int x, int y, int extra, void *param)
+int	mouse_hook(int x, int y, int extra, t_fractol *fractol)
 {
-	printf("%i %i\n", x, y);
+	t_complex	min;
+	t_complex	max;
+	t_complex	scale;
+
+	set_julia_limits(&min, &max, &scale);
+	/* fractol->k.re = 1;
+	fractol->k.im = 1; */
+	/* printf("%f %f\n", fractol->k.re, fractol->k.im);  */
+	(void)x;
+	(void)y;
 	(void)extra;
-	(void)param;
+	(void)fractol;
 	return (0);
 }
 
@@ -291,12 +300,11 @@ void	init_fractol(t_fractol *fractol)
 int	main(void)
 {
 	t_fractol	fractol;
-	t_complex	k;
 
 	init_fractol(&fractol);
-	draw_mandelbrot(&fractol.img, 50);
-	k = init_complex(0.33, 0.395);
-	draw_julia(&fractol.img, 50, k);
+	//draw_mandelbrot(&fractol.img, 50);
+	fractol.k = init_complex(0.33, 0.395);
+	draw_julia(&fractol.img, 50, fractol.k);
 	mlx_put_image_to_window(fractol.mlx, fractol.win, fractol.img.img, 0, 0);
 	mlx_loop(fractol.mlx); // draws, opens the window, manages events
 	return (0);
