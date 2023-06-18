@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/14 21:59:06 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/18 18:26:35 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <mlx.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <math.h>
 
 typedef struct s_vars {
 	void	*mlx;

@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/14 22:21:23 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/18 21:27:43 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,7 @@ void	draw_julia(t_data *img, int	iterations, t_complex k)
 	t_complex	max;
 	t_complex	scale;
 
+	printf("DRAW: %p %i %f %f\n", img, iterations, k.re, k.im);
 	set_julia_limits(&min, &max, &scale);
 	y = 0;
 	while (y < HEIGHT)
@@ -267,19 +268,50 @@ int	simple_mouse_hook(int code, t_vars *v)
 
 int	mouse_hook(int x, int y, int extra, t_fractol *fractol)
 {
-	/* t_complex	min;
+	t_complex	min;
 	t_complex	max;
-	t_complex	scale; */
+	t_complex	scale;
 
 	// check limits
-	printf("%d %d\n", x, y); 
-	/* set_julia_limits(&min, &max, &scale);
+	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
+		return (0);
+	printf("mouse_hook: %d %d %d\n", x, y, extra); 
+	set_julia_limits(&min, &max, &scale);
+	printf("limits set\n"); 
+	printf("%f %f\n", min.re + x * scale.re, max.im - y * scale.im); 
+	printf("hi\n"); 
 	fractol->k.re = min.re + x * scale.re;
 	fractol->k.im = max.im - y * scale.im;
-	printf("%f %f\n", fractol->k.re, fractol->k.im);  */
+	//draw_julia(&fractol->img, 50, fractol->k);
+	printf("%f %f\n", fractol->k.re, fractol->k.im); 
 	(void)x;
 	(void)y;
 	(void)extra;
+	(void)fractol;
+	return (0);
+}
+
+
+int	zoom(int code, int x, int y, t_fractol *fractol)
+{
+	t_complex	min;
+	t_complex	max;
+	t_complex	scale;
+
+	// check limits
+	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
+		return (0);
+	printf("zoom: %d %d %d\n", code, x, y);
+	set_julia_limits(&min, &max, &scale);
+	fractol->k.re = min.re + x * scale.re;
+	fractol->k.im = max.im - y * scale.im;
+
+	printf("%f %f\n", fractol->k.re, fractol->k.im); 
+	draw_julia(&(fractol->img), 50, fractol->k);
+	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img.img, 0, 0);
+	(void)x;
+	(void)y;
+	(void)code;
 	(void)fractol;
 	return (0);
 }
@@ -292,17 +324,20 @@ void	init_fractol(t_fractol *fractol)
 	// will need this when we need to draw
 	mlx_hook(fractol->win, 17, 0, close_hook, fractol); // weird magic
 	mlx_mouse_hook(fractol->win, simple_mouse_hook, fractol);
-	mlx_hook(fractol->win, 6, 0, mouse_hook, fractol);
+	//mlx_hook(fractol->win, 6, 0, mouse_hook, fractol);
+	mlx_hook(fractol->win, 4, 0, zoom, fractol);
 	fractol->img.img = mlx_new_image(fractol->mlx, WIDTH, HEIGHT);
 	fractol->img.addr = mlx_get_data_addr(fractol->img.img,
 		&fractol->img.bits_per_pixel, &fractol->img.line_length,
 		&fractol->img.endian);
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	t_fractol	fractol;
 
+	(void)ac;
+	(void)av;
 	init_fractol(&fractol);
 	//draw_mandelbrot(&fractol.img, 50);
 	fractol.k = init_complex(0.33, 0.395);
