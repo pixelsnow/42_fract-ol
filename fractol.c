@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/18 21:27:43 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/18 21:33:28 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,9 +214,9 @@ void	draw_julia(t_data *img, int	iterations, t_complex k)
 			c.re = min.re + x * scale.re;
 			escape_count = count_iterations_julia(iterations, k, c);
 			if (escape_count)
-			{
 				my_mlx_pixel_put(img, x, y, get_colour(iterations, escape_count));
-			}
+			else
+				my_mlx_pixel_put(img, x, y, rgb_to_int(0, 0, 0));
 			x++;
 		}
 		y++;
@@ -246,6 +246,8 @@ void	draw_mandelbrot(t_data *img, int iterations)
 			if (escape_count)
 				my_mlx_pixel_put(img, x, y, get_colour(iterations,
 						escape_count));
+			else
+				my_mlx_pixel_put(img, x, y, rgb_to_int(0, 0, 0));
 			x++;
 		}
 		y++;
