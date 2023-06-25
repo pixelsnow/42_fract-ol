@@ -3,6 +3,9 @@
 		"fractol.h": "c",
 		"unistd.h": "c",
 		"stdio.h": "c",
-		"__locale": "c"
+		"__locale": "c",
+		"iterator": "c",
+		"chrono": "c",
+		"ratio": "c"
 	}
 }

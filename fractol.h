@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/25 11:13:30 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/25 16:23:26 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,28 @@ typedef struct s_complex {
 	double	im;
 }				t_complex;
 
+typedef enum {
+  MANDELBROT,
+  JULIA
+} t_type;
+
+typedef enum {
+  BW,
+  COLOR1
+} t_color;
+
+
 typedef struct s_fractol {
 	t_data		img;
 	void		*mlx;
 	void		*win;
-	t_complex	k;
+	t_type		type; // fractal type
+	t_color		color;
+	int			iter;
+	t_complex	k; // for julia
+	t_complex	min;
+	t_complex	max;
+	t_complex	scale;
 }				t_fractol;
-
-typedef enum {
-  MANDELBROT,
-  JULIA
-} t_fractal_types;
 
 #endif
