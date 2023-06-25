@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/18 21:44:36 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/25 11:13:30 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,10 @@ typedef struct s_fractol {
 	void		*win;
 	t_complex	k;
 }				t_fractol;
+
+typedef enum {
+  MANDELBROT,
+  JULIA
+} t_fractal_types;
 
 #endif

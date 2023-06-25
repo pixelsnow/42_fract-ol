@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/18 21:47:15 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/25 11:34:24 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,16 +328,33 @@ void	init_fractol(t_fractol *fractol)
 		&fractol->img.endian);
 }
 
+void	print_instructions(void)
+{
+	write(1, "To draw Mandelbrot:\n", 20);
+	write(1, "m [iterations*] - * optional, default is 50\n", 44);
+	write(1, "Mandelbrot example:\nm 100\n", 26);
+	write(1, "To draw Julia:\n", 15);
+	write(1, "j [constant_Re] [constant_Im] [iterations*] - * optional, default is 50\n", 91);
+	write(1, "Julia example:\nj 0.33 0.395 40\n", 31);
+}
+
+void	parse_args(int ac, char **av, t_fractol	*fractol)
+{
+	(void)ac;
+	(void)av;
+	(void)fractol;
+}
+
 int	main(int ac, char **av)
 {
 	t_fractol	fractol;
 
 	// TODO: handle arguments
-	(void)ac;
-	(void)av;
+	parse_args(ac, av, &fractol);
+	print_instructions();
 	init_fractol(&fractol);
 	//draw_mandelbrot(&fractol.img, 50);
-	fractol.k = init_complex(0.33, 0.395);
+	fractol.k = init_complex(-2, 0);
 	draw_julia(&fractol.img, 50, fractol.k);
 	mlx_put_image_to_window(fractol.mlx, fractol.win, fractol.img.img, 0, 0);
 	/* mlx_hook(fractol.win, 17, 0, close_hook, &fractol); // weird magic
