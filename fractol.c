@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/25 19:14:42 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/25 20:59:50 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,6 @@ void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
 
 void	set_julia_limits(t_fractol *f)
 {
-	f->min.re = -1.0;
-	f->max.re = 1.0;
 	f->min.im = - (f->max.re - f->min.re) / 2 * HEIGHT / WIDTH;
 	f->max.im = f->min.im + (f->max.re - f->min.re) * HEIGHT / WIDTH;
 	f->scale.re = (f->max.re - f->min.re) / (WIDTH - 1);
@@ -220,18 +218,6 @@ void	set_julia_k(int x, int y, t_fractol *fractol)
 	fractol->k.im = fractol->max.im - y * fractol->scale.im;
 }
 
-int	julia_mouse_hook(int x, int y, t_fractol *fractol)
-{
-	// check limits
-	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
-		return (0);
-	set_julia_limits(fractol);
-	set_julia_k(x, y, fractol);
-	draw_julia(fractol);
-	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img.img, 0, 0);
-	return (0);
-}
-
 void	draw_fractal(t_fractol *fractol)
 {
 	if (fractol->type == JULIA)
@@ -245,6 +231,18 @@ void	draw_fractal(t_fractol *fractol)
 	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img.img, 0, 0);
 }
 
+int	julia_mouse_hook(int x, int y, t_fractol *fractol)
+{
+	// check limits
+	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
+		return (0);
+	set_julia_limits(fractol);
+	set_julia_k(x, y, fractol);
+	draw_fractal(fractol);
+	return (0);
+}
+
+
 int	zoom(int code, int x, int y, t_fractol *fractol)
 {
 	// check limits
@@ -252,11 +250,9 @@ int	zoom(int code, int x, int y, t_fractol *fractol)
 		return (0);
 	printf("zoom: %d %d %d\n", code, x, y);
 	set_julia_limits(fractol);
-	fractol->k.re = fractol->min.re + x * fractol->scale.re;
-	fractol->k.im = fractol->max.im - y * fractol->scale.im;
+	set_julia_k(x, y, fractol);
 	printf("%f %f\n", fractol->k.re, fractol->k.im); 
-	draw_julia(fractol);
-	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img.img, 0, 0);
+	draw_fractal(fractol);
 	return (0);
 }
 
@@ -274,8 +270,7 @@ void	move_fractol(int code, t_fractol *fractol)
 		fractol->min.re -= 0.1;
 		fractol->max.re -= 0.1;
 	}
-	draw_julia(fractol);
-	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img.img, 0, 0);
+	draw_fractal(fractol);
 }
 
 int	keyboard_hook(int code, t_fractol *fractol)
@@ -295,11 +290,11 @@ void	init_fractol_mlx(t_fractol *fractol)
 	fractol->mlx = mlx_init();
 	// identifier of the connection to the graphics server
 	fractol->win = mlx_new_window(fractol->mlx, WIDTH, HEIGHT, "fractol");
-	// will need this when we need to draw
 	mlx_hook(fractol->win, 17, 0, close_hook, fractol); // weird magic
-	mlx_hook(fractol->win, 6, 0, julia_mouse_hook, fractol);
 	mlx_hook(fractol->win, 4, 0, zoom, fractol);
 	mlx_hook(fractol->win, 3, 0, keyboard_hook, fractol);
+	if (fractol->type == JULIA)
+		mlx_hook(fractol->win, 6, 0, julia_mouse_hook, fractol);
 	fractol->img.img = mlx_new_image(fractol->mlx, WIDTH, HEIGHT);
 	fractol->img.addr = mlx_get_data_addr(fractol->img.img,
 		&fractol->img.bits_per_pixel, &fractol->img.line_length,
@@ -364,13 +359,50 @@ double	ft_atof(char *str)
 	return (res);
 }
 
+int	validate_julia_args(int ac, char **av, t_fractol *fractol)
+{
+	(void)ac;
+	(void)av;
+	(void)fractol;
+	return (0);
+}
+
+int	parse_julia_args(int ac, char **av, t_fractol *fractol)
+{
+	printf("parsing julia args\n");
+	if (validate_julia_args(ac, av, fractol))
+		return (1);
+	fractol->k = init_complex(atof(av[2]), atof(av[3]));
+	fractol->min.re = -1.0;
+	fractol->max.re = 1.0;
+	return (0);
+}
+
+int	parse_fractal_args(int ac, char **av, t_fractol *fractol)
+{
+	if (fractol->type == JULIA)
+		return parse_julia_args(ac, av, fractol);
+	if (fractol->type == MANDELBROT)
+		return (ac != 2);
+	else
+		return (1);
+}
+
 int	parse_args(int ac, char **av, t_fractol	*fractol)
 {
-	if (ac < 3)
+	if (ac < 2)
 		return (1);
-	if (parse_fractal_type(av[0], fractol))
+	if (parse_fractal_type(av[1], fractol))
+	{
+		printf("type not parsed\n");
 		return (1);
-
+	}
+	if (parse_fractal_args(ac, av, fractol))
+	{
+		printf("args not parsed\n");
+		return (1);
+	}
+	printf("all parsed\n");
 	return (0);
 }
 
@@ -379,16 +411,15 @@ int	main(int ac, char **av)
 	t_fractol	fractol;
 
 	// TODO: handle arguments
-	//parse_args(ac, av, &fractol);
-	(void)ac;
-	(void)av;
+	if (parse_args(ac, av, &fractol))
+		return (1);
+	fractol.iter = 50;
 	//print_instructions();
+	//fractol.k = init_complex(0.26, 0.0016);
 	init_fractol_mlx(&fractol);
 	//draw_mandelbrot(&fractol.img, 50);
-	fractol.k = init_complex(0.26, 0.0016);
-	fractol.iter = 50;
-	draw_julia(&fractol);
-	mlx_put_image_to_window(fractol.mlx, fractol.win, fractol.img.img, 0, 0);
+	
+	draw_fractal(&fractol);
 	/* mlx_hook(fractol.win, 17, 0, close_hook, &fractol); // weird magic
 	mlx_mouse_hook(fractol.win, simple_mouse_hook, &fractol);
 	mlx_hook(fractol.win, 6, 0, mouse_hook, &fractol); */
