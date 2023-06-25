@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/25 16:23:26 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/25 17:19:31 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,17 @@
 
 # define WIDTH 800
 # define HEIGHT 800
+
+# define ARROW_UP		126
+# define ARROW_DOWN		125
+# define ARROW_LEFT		123
+# define ARROW_RIGHT	124
+# define ESC			53
+# define SPACE			49
+# define NUM_PAD_PLUS	69
+# define NUM_PAD_MINUS	78
+# define PLUS			24
+# define MINUS			27
 
 # include <mlx.h>
 # include <unistd.h>
