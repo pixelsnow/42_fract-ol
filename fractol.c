@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/25 20:59:50 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/25 22:30:46 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,14 +117,14 @@ int	get_colour_bw(int iterations, int iteration_count)
 
 int	get_colour_1(int iterations, int iteration_count)
 {
-	return (rgb_to_int(255 / iterations * (iterations - iteration_count),
+	return (rgb_to_int(250,
 			255 / iterations * (iterations - iteration_count),
 			255 / iterations * (iterations - iteration_count)));
 }
 
 int	get_colour(int iterations, int iteration_count)
 {
-	return get_colour_bw(iterations, iteration_count);
+	return get_colour_1(iterations, iteration_count);
 }
 
 void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
@@ -145,7 +145,6 @@ void	set_julia_limits(t_fractol *f)
 	f->scale.im = (f->max.im - f->min.im) / (HEIGHT - 1);
 }
 
-// TODO: refactor to only take in fractol object
 void	draw_julia(t_fractol *f)
 {
 	int		y;
@@ -174,6 +173,7 @@ void	draw_julia(t_fractol *f)
 	}
 }
 
+// TODO: refactor to only take in fractol object
 void	draw_mandelbrot(t_data *img, int iterations)
 {
 	int			y;
