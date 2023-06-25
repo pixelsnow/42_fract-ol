@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/25 19:10:00 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/06/25 19:14:42 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	printf("putting pixel (%i; %i), color: %i\n", x, y, color);
 	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
 		return ;
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
@@ -72,7 +71,7 @@ int	count_iterations_mandelbrot(int iterations, t_complex c)
 	iter = 0;
 	while (iter < iterations)
 	{
-		z_parts_sq = init_complex(sqrt(z.re), sqrt(z.im));
+		z_parts_sq = init_complex(pow(z.re, 2), pow(z.im, 2));
 		if (z_parts_sq.re + z_parts_sq.im > 4)
 			return (iter);
 		z.im = 2 * z.re * z.im + c.im;
@@ -92,7 +91,7 @@ int	count_iterations_julia(int iterations, t_complex k, t_complex c)
 	iter = 0;
 	while (iter < iterations)
 	{
-		z_parts_sq = init_complex(sqrt(z.re), sqrt(z.im));
+		z_parts_sq = init_complex(pow(z.re, 2), pow(z.im, 2));
 		if (z_parts_sq.re + z_parts_sq.im > 4)
 			return (iter);
 		z.im = 2 * z.re * z.im + k.im;
