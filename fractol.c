@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/25 22:30:46 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/05 20:31:59 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ int	get_colour_1(int iterations, int iteration_count)
 
 int	get_colour(int iterations, int iteration_count)
 {
-	return get_colour_1(iterations, iteration_count);
+	return get_colour_bw(iterations, iteration_count);
 }
 
 void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
@@ -344,18 +344,40 @@ static long long	ft_simple_atoi(const char *str)
 	return (res * sign);
 }
 
-char	*find_after_point(char *str)
+char	*find_point(char *str)
 {
 	while (*str && *str != '.')
 		str++;
 	return str;
 }
 
+int	ft_strlen(const char *str)
+{
+	int res;
+	
+	res = 0;
+	while (str[res])
+		res++;
+	return (res);
+}
+
+// TODO: Validate input
+
 double	ft_atof(char *str)
 {
 	double	res;
+	char	*decimal;
+	int		decimal_len;
 	
+	printf("str: %s", str);
 	res = ft_simple_atoi(str);
+	decimal = find_point(str);
+	if (*decimal == '.')
+		decimal++;
+	printf("decimal: %s", decimal);
+	decimal_len = ft_strlen(decimal);
+	res += ft_simple_atoi(decimal) * pow(10, -decimal_len);
+	printf("res: %f", res);
 	return (res);
 }
 
@@ -409,6 +431,8 @@ int	parse_args(int ac, char **av, t_fractol	*fractol)
 int	main(int ac, char **av)
 {
 	t_fractol	fractol;
+
+	ft_atof("2345.6789");
 
 	// TODO: handle arguments
 	if (parse_args(ac, av, &fractol))
