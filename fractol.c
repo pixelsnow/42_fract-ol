@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/08 18:33:08 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/08 20:21:59 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,20 +330,43 @@ int	parse_fractal_type(const char *type, t_fractol	*fractol)
 		return (1);
 }
 
-int	validate_julia_args(int ac, char **av, t_fractol *fractol)
+int	is_invalid_double(char *str)
 {
-	(void)ac;
-	(void)av;
-	(void)fractol;
+	int	i;
+	int	point_found;
+
+	i = 0;
+	point_found = 0;
+	while (str[i])
+	{
+		if (str[i] == '.')
+		{
+			if (!point_found)
+				point_found = 1;
+			else
+				return (1);
+		}
+		else if (str[i] < '0' || str[i] > '9')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	validate_julia_args(int ac, char **av)
+{
+	if (ac != 4)
+		return (1);
+	if (is_invalid_double(av[2]) || is_invalid_double(av[3]))
+		return (1);
 	return (0);
 }
 
 int	parse_julia_args(int ac, char **av, t_fractol *fractol)
 {
-	printf("parsing julia args\n");
-	if (validate_julia_args(ac, av, fractol))
+	if (validate_julia_args(ac, av))
 		return (1);
-	fractol->k = init_complex(atof(av[2]), atof(av[3]));
+	fractol->k = init_complex(ft_atof(av[2]), ft_atof(av[3]));
 	fractol->min.re = -1.0;
 	fractol->max.re = 1.0;
 	return (0);
@@ -365,15 +388,15 @@ int	parse_args(int ac, char **av, t_fractol	*fractol)
 		return (1);
 	if (parse_fractal_type(av[1], fractol))
 	{
-		printf("type not parsed\n");
+		//printf("type not parsed\n");
 		return (1);
 	}
 	if (parse_fractal_args(ac, av, fractol))
 	{
-		printf("args not parsed\n");
+		//printf("args not parsed\n");
 		return (1);
 	}
-	printf("all parsed\n");
+	//printf("all parsed\n");
 	return (0);
 }
 
