@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/08 18:33:55 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/08 21:31:33 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ typedef enum {
   COLOR1
 } t_color;
 
-
 typedef struct s_fractol {
 	t_data		img;
 	void		*mlx;
@@ -72,6 +71,7 @@ typedef struct s_fractol {
 	t_complex	min;
 	t_complex	max;
 	t_complex	scale;
+	double		zoom;
 }				t_fractol;
 
 double	ft_atof(char *str);

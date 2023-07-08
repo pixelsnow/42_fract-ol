@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/08 20:21:59 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/08 21:48:50 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,6 @@ void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
 
 void	set_julia_limits(t_fractol *f)
 {
-	f->min.im = - (f->max.re - f->min.re) / 2 * HEIGHT / WIDTH;
-	f->max.im = f->min.im + (f->max.re - f->min.re) * HEIGHT / WIDTH;
 	f->scale.re = (f->max.re - f->min.re) / (WIDTH - 1);
 	f->scale.im = (f->max.im - f->min.im) / (HEIGHT - 1);
 }
@@ -244,16 +242,25 @@ int	julia_mouse_hook(int x, int y, t_fractol *fractol)
 	return (0);
 }
 
-int	zoom(int code, int x, int y, t_fractol *fractol)
+int	zoom(int code, int x, int y, t_fractol *f)
 {
 	// check limits
 	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
 		return (0);
 	printf("zoom: %d %d %d\n", code, x, y);
-	set_julia_limits(fractol);
-	set_julia_k(x, y, fractol);
-	printf("%f %f\n", fractol->k.re, fractol->k.im); 
-	draw_fractal(fractol);
+	set_julia_limits(f);
+	set_julia_k(x, y, f);
+	printf("%f %f\n", f->k.re, f->k.im); 
+	if (code == 4)
+		f->zoom += 0.02;
+	else if (code == 5)
+		f->zoom -= 0.02;
+	f->min.re *= f->zoom;
+	f->max.re *= f->zoom;
+	f->min.im *= f->zoom;
+	f->max.im *= f->zoom;
+	printf("zoom: %f\n", f->zoom); 
+	draw_fractal(f);
 	return (0);
 }
 
@@ -263,13 +270,13 @@ void	move_fractol(int code, t_fractol *fractol)
 	(void)fractol;
 	if (code == ARROW_RIGHT)
 	{
-		fractol->min.re += 0.1;
-		fractol->max.re += 0.1;
+		fractol->min.re += 0.1 * fractol->zoom;
+		fractol->max.re += 0.1 * fractol->zoom;
 	}
 	else if (code == ARROW_LEFT)
 	{
-		fractol->min.re -= 0.1;
-		fractol->max.re -= 0.1;
+		fractol->min.re -= 0.1 * fractol->zoom;
+		fractol->max.re -= 0.1 * fractol->zoom;
 	}
 	draw_fractal(fractol);
 }
@@ -362,13 +369,16 @@ int	validate_julia_args(int ac, char **av)
 	return (0);
 }
 
-int	parse_julia_args(int ac, char **av, t_fractol *fractol)
+int	parse_julia_args(int ac, char **av, t_fractol *f)
 {
 	if (validate_julia_args(ac, av))
 		return (1);
-	fractol->k = init_complex(ft_atof(av[2]), ft_atof(av[3]));
-	fractol->min.re = -1.0;
-	fractol->max.re = 1.0;
+	f->k = init_complex(ft_atof(av[2]), ft_atof(av[3]));
+	f->min.re = -1.0;
+	f->max.re = 1.0;
+	f->min.im = - (f->max.re - f->min.re) / 2 * HEIGHT / WIDTH;
+	f->max.im = f->min.im + (f->max.re - f->min.re) * HEIGHT / WIDTH;
+	f->zoom = 1;
 	return (0);
 }
 
