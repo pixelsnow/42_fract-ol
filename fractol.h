@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/06/25 17:19:31 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/08 18:33:55 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,5 +73,7 @@ typedef struct s_fractol {
 	t_complex	max;
 	t_complex	scale;
 }				t_fractol;
+
+double	ft_atof(char *str);
 
 #endif

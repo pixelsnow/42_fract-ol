@@ -6,12 +6,14 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/05 20:31:59 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/08 18:33:08 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 #include <stdio.h>
+#include <limits.h>
+#include <float.h>
 
 t_complex	init_complex(double re, double im)
 {
@@ -242,7 +244,6 @@ int	julia_mouse_hook(int x, int y, t_fractol *fractol)
 	return (0);
 }
 
-
 int	zoom(int code, int x, int y, t_fractol *fractol)
 {
 	// check limits
@@ -329,58 +330,6 @@ int	parse_fractal_type(const char *type, t_fractol	*fractol)
 		return (1);
 }
 
-static long long	ft_simple_atoi(const char *str)
-{
-	char		sign;
-	long long	res;
-
-	sign = 1;
-	res = 0;
-	if (*str == '-' || *str == '+')
-		if (*(str++) == '-')
-			sign = -1;
-	while (*str >= '0' && *str <= '9')
-		res = res * 10 + (*(str++) - '0');
-	return (res * sign);
-}
-
-char	*find_point(char *str)
-{
-	while (*str && *str != '.')
-		str++;
-	return str;
-}
-
-int	ft_strlen(const char *str)
-{
-	int res;
-	
-	res = 0;
-	while (str[res])
-		res++;
-	return (res);
-}
-
-// TODO: Validate input
-
-double	ft_atof(char *str)
-{
-	double	res;
-	char	*decimal;
-	int		decimal_len;
-	
-	printf("str: %s", str);
-	res = ft_simple_atoi(str);
-	decimal = find_point(str);
-	if (*decimal == '.')
-		decimal++;
-	printf("decimal: %s", decimal);
-	decimal_len = ft_strlen(decimal);
-	res += ft_simple_atoi(decimal) * pow(10, -decimal_len);
-	printf("res: %f", res);
-	return (res);
-}
-
 int	validate_julia_args(int ac, char **av, t_fractol *fractol)
 {
 	(void)ac;
@@ -432,8 +381,6 @@ int	main(int ac, char **av)
 {
 	t_fractol	fractol;
 
-	ft_atof("2345.6789");
-
 	// TODO: handle arguments
 	if (parse_args(ac, av, &fractol))
 		return (1);
@@ -442,7 +389,6 @@ int	main(int ac, char **av)
 	//fractol.k = init_complex(0.26, 0.0016);
 	init_fractol_mlx(&fractol);
 	//draw_mandelbrot(&fractol.img, 50);
-	
 	draw_fractal(&fractol);
 	/* mlx_hook(fractol.win, 17, 0, close_hook, &fractol); // weird magic
 	mlx_mouse_hook(fractol.win, simple_mouse_hook, &fractol);
