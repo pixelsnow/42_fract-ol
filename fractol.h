@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/08 21:31:33 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 17:41:00 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct s_fractol {
 	t_type		type; // fractal type
 	t_color		color;
 	int			iter;
+	int			k_fixed;
 	t_complex	k; // for julia
 	t_complex	min;
 	t_complex	max;

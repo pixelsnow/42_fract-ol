@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/08 21:48:50 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 17:51:49 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,6 +234,8 @@ void	draw_fractal(t_fractol *fractol)
 int	julia_mouse_hook(int x, int y, t_fractol *fractol)
 {
 	// check limits
+	if (fractol->k_fixed)
+		return (0);
 	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
 		return (0);
 	set_julia_limits(fractol);
@@ -249,12 +251,13 @@ int	zoom(int code, int x, int y, t_fractol *f)
 		return (0);
 	printf("zoom: %d %d %d\n", code, x, y);
 	set_julia_limits(f);
-	set_julia_k(x, y, f);
+	if (!f->k_fixed)
+		set_julia_k(x, y, f);
 	printf("%f %f\n", f->k.re, f->k.im); 
 	if (code == 4)
-		f->zoom += 0.02;
+		f->zoom = 0.9;
 	else if (code == 5)
-		f->zoom -= 0.02;
+		f->zoom = 1.1;
 	f->min.re *= f->zoom;
 	f->max.re *= f->zoom;
 	f->min.im *= f->zoom;
@@ -289,6 +292,8 @@ int	keyboard_hook(int code, t_fractol *fractol)
 		exit(0);
 	else if (code == ARROW_UP || code == ARROW_DOWN || code == ARROW_LEFT || code == ARROW_RIGHT)
 		move_fractol(code, fractol);
+	else if (code == SPACE)
+		fractol->k_fixed = !fractol->k_fixed;
 	(void)fractol;
 	return (0);
 }
@@ -379,6 +384,7 @@ int	parse_julia_args(int ac, char **av, t_fractol *f)
 	f->min.im = - (f->max.re - f->min.re) / 2 * HEIGHT / WIDTH;
 	f->max.im = f->min.im + (f->max.re - f->min.re) * HEIGHT / WIDTH;
 	f->zoom = 1;
+	f->k_fixed = 0;
 	return (0);
 }
 
