@@ -6,15 +6,15 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 20:00:09 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 20:31:32 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-# define WIDTH 400
-# define HEIGHT 400
+# define WIDTH			400
+# define HEIGHT			400
 
 # define ARROW_UP		126
 # define ARROW_DOWN		125
@@ -22,6 +22,9 @@
 # define ARROW_RIGHT	124
 # define ESC			53
 # define SPACE			49
+# define C				8
+
+# define ITER			50
 
 # include <mlx.h>
 # include <unistd.h>
@@ -51,17 +54,12 @@ typedef enum {
   JULIA
 } t_type;
 
-typedef enum {
-  BW,
-  COLOR1
-} t_color;
-
 typedef struct s_fractol {
 	t_data		img;
 	void		*mlx;
 	void		*win;
 	t_type		type; // fractal type
-	t_color		color;
+	int			color;
 	int			iter;
 	int			k_fixed;
 	t_complex	k; // for julia
@@ -70,6 +68,9 @@ typedef struct s_fractol {
 	t_complex	scale;
 }				t_fractol;
 
-double	ft_atof(char *str);
+double		ft_atof(char *str);
+t_complex	init_complex(double re, double im);
+int			rgb_to_int(int r, int g, int b);
+void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
 
 #endif

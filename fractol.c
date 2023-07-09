@@ -6,60 +6,12 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 19:59:22 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 20:36:10 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 #include <stdio.h>
-
-t_complex	init_complex(double re, double im)
-{
-	t_complex	res;
-
-	res.re = re;
-	res.im = im;
-	return (res);
-}
-
-int	rgb_to_int(int r, int g, int b)
-{
-	int	bit;
-	int	res;
-
-	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-		return (0);
-	res = 0;
-	bit = 7;
-	while (bit >= 0)
-	{
-		res |= (r & (1 << bit)) << 16;
-		bit--;
-	}
-	bit = 7;
-	while (bit >= 0)
-	{
-		res |= (g & (1 << bit)) << 8;
-		bit--;
-	}
-	bit = 7;
-	while (bit >= 0)
-	{
-		res |= (b & (1 << bit));
-		bit--;
-	}
-	return (res);
-}
-
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
-{
-	char	*dst;
-
-	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
-		return ;
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int *)dst = color;
-}
 
 int	count_iterations_mandelbrot(int iterations, t_complex c)
 {
@@ -117,14 +69,24 @@ int	get_colour_bw(int iterations, int iteration_count)
 
 int	get_colour_1(int iterations, int iteration_count)
 {
-	return (rgb_to_int(250,
-			255 / iterations * (iterations - iteration_count),
-			255 / iterations * (iterations - iteration_count)));
+	int	mod;
+
+	(void) iterations;
+	mod = iteration_count % 3;
+	if (mod == 0)
+		return (rgb_to_int(197, 222, 193));
+	if (mod == 1)
+		return (rgb_to_int(161, 154, 255));
+	return (rgb_to_int(255, 214, 235));
 }
 
-int	get_colour(int iterations, int iteration_count)
+int	get_colour(int color, int iterations, int iteration_count)
 {
-	return get_colour_bw(iterations, iteration_count);
+	if (color == 0)
+		return get_colour_bw(iterations, iteration_count);
+	if (color == 1)
+		return get_colour_wb(iterations, iteration_count);
+	return get_colour_1(iterations, iteration_count);
 }
 
 void	set_limits(t_complex *min, t_complex *max, t_complex *scale)
@@ -162,7 +124,7 @@ void	draw_julia(t_fractol *f)
 			c.re = f->min.re + x * f->scale.re;
 			escape_count = count_iterations_julia(f->iter, f->k, c);
 			if (escape_count)
-				my_mlx_pixel_put(&f->img, x, y, get_colour(f->iter, escape_count));
+				my_mlx_pixel_put(&f->img, x, y, get_colour(f->color, f->iter, escape_count));
 			else
 				my_mlx_pixel_put(&f->img, x, y, rgb_to_int(0, 0, 0));
 			x++;
@@ -193,7 +155,7 @@ void	draw_mandelbrot(t_data *img, int iterations)
 			c.re = min.re + x * scale.re;
 			escape_count = count_iterations_mandelbrot(iterations, c);
 			if (escape_count)
-				my_mlx_pixel_put(img, x, y, get_colour(iterations,
+				my_mlx_pixel_put(img, x, y, get_colour(0, iterations,
 						escape_count));
 			else
 				my_mlx_pixel_put(img, x, y, rgb_to_int(0, 0, 0));
@@ -292,6 +254,12 @@ void	move_fractol(int code, t_fractol *fractol)
 	draw_fractal(fractol);
 }
 
+void	shift_colors(t_fractol *fractol)
+{
+	fractol->color = (fractol->color + 1) % 3;
+	draw_fractal(fractol);
+}
+
 int	keyboard_hook(int code, t_fractol *fractol)
 {
 	printf("%i\n", code);
@@ -302,6 +270,8 @@ int	keyboard_hook(int code, t_fractol *fractol)
 		move_fractol(code, fractol);
 	else if (code == SPACE)
 		fractol->k_fixed = !fractol->k_fixed;
+	else if (code == C)
+		shift_colors(fractol);
 	(void)fractol;
 	return (0);
 }
@@ -324,12 +294,8 @@ void	init_fractol_mlx(t_fractol *fractol)
 
 void	print_instructions(void)
 {
-	write(1, "To draw Mandelbrot:\n", 20);
-	write(1, "m [iterations*] - * optional, default is 50\n", 44);
-	write(1, "Mandelbrot example:\nm 100\n", 26);
-	write(1, "To draw Julia:\n", 15);
-	write(1, "j [constant_Re] [constant_Im] [iterations*] - * optional, default is 50\n", 72);
-	write(1, "Julia example:\nj 0.33 0.395 40\n", 31);
+	write(1, "Mandelbrot:\tm\n", 14);
+	write(1, "Julia:\t\tj [constant_Re] [constant_Im]\n", 38);
 }
 
 int	parse_fractal_type(const char *type, t_fractol	*fractol)
@@ -411,15 +377,16 @@ int	parse_args(int ac, char **av, t_fractol	*fractol)
 		return (1);
 	if (parse_fractal_type(av[1], fractol))
 	{
-		//printf("type not parsed\n");
+		print_instructions();
 		return (1);
 	}
 	if (parse_fractal_args(ac, av, fractol))
 	{
-		//printf("args not parsed\n");
+		print_instructions();
 		return (1);
 	}
-	//printf("all parsed\n");
+	fractol->iter = ITER;
+	fractol->color = 0;
 	return (0);
 }
 
@@ -430,7 +397,6 @@ int	main(int ac, char **av)
 	// TODO: handle arguments
 	if (parse_args(ac, av, &fractol))
 		return (1);
-	fractol.iter = 50;
 	//print_instructions();
 	//fractol.k = init_complex(0.26, 0.0016);
 	init_fractol_mlx(&fractol);
