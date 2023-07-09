@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 18:50:37 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 19:59:22 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,8 +244,9 @@ int	julia_mouse_hook(int x, int y, t_fractol *fractol)
 
 int	zoom(int code, int x, int y, t_fractol *f)
 {
+	double	zoom;
 	// check limits
-	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
+	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT || (code != 4 && code != 5))
 		return (0);
 	printf("zoom: %d %d %d\n", code, x, y);
 	set_julia_limits(f);
@@ -253,13 +254,13 @@ int	zoom(int code, int x, int y, t_fractol *f)
 		set_julia_k(x, y, f);
 	printf("%f %f\n", f->k.re, f->k.im); 
 	if (code == 4)
-		f->zoom = 1.25;
-	else if (code == 5)
-		f->zoom = 0.8;
-	f->min.re += (1 - f->zoom) * 0.5 * (f->max.re - f->min.re) * (x / (double)WIDTH);
-	f->max.re -= (1 - f->zoom) * 0.5 * (f->max.re - f->min.re) * (((double)WIDTH - x) / (double)WIDTH);
-	f->min.im += (1 - f->zoom) * 0.5 * (f->max.im - f->min.im) * (((double)HEIGHT - y) / (double)HEIGHT);
-	f->max.im -= (1 - f->zoom) * 0.5 * (f->max.im - f->min.im) * (y / (double)HEIGHT);
+		zoom = 1.25;
+	else
+		zoom = 0.8;
+	f->min.re += (1 - zoom) * (f->max.re - f->min.re) * (x / (double)WIDTH);
+	f->max.re -= (1 - zoom) * (f->max.re - f->min.re) * (((double)WIDTH - x) / (double)WIDTH);
+	f->min.im += (1 - zoom) * (f->max.im - f->min.im) * (((double)HEIGHT - y) / (double)HEIGHT);
+	f->max.im -= (1 - zoom) * (f->max.im - f->min.im) * (y / (double)HEIGHT);
 	draw_fractal(f);
 	return (0);
 }
@@ -390,7 +391,6 @@ int	parse_julia_args(int ac, char **av, t_fractol *f)
 	f->max.re = 1.0;
 	f->min.im = - (f->max.re - f->min.re) / 2 * HEIGHT / WIDTH;
 	f->max.im = f->min.im + (f->max.re - f->min.re) * HEIGHT / WIDTH;
-	f->zoom = 1;
 	f->k_fixed = 0;
 	return (0);
 }
