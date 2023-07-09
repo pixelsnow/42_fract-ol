@@ -6,14 +6,12 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 18:49:06 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:50:37 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 #include <stdio.h>
-#include <limits.h>
-#include <float.h>
 
 t_complex	init_complex(double re, double im)
 {
