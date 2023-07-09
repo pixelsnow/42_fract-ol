@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 17:51:49 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:36:07 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,13 +255,30 @@ int	zoom(int code, int x, int y, t_fractol *f)
 		set_julia_k(x, y, f);
 	printf("%f %f\n", f->k.re, f->k.im); 
 	if (code == 4)
-		f->zoom = 0.9;
-	else if (code == 5)
 		f->zoom = 1.1;
-	f->min.re *= f->zoom;
-	f->max.re *= f->zoom;
-	f->min.im *= f->zoom;
-	f->max.im *= f->zoom;
+	else if (code == 5)
+		f->zoom = 0.9;
+
+	printf("	%f\n", (y / (double)HEIGHT)); 
+	printf("	%f\n", (((double)HEIGHT - y) / (double)HEIGHT)); 
+	printf("	%f\n", (x / (double)WIDTH)); 
+	printf("	%f\n", (((double)WIDTH - x) / (double)WIDTH)); 
+	printf("	%f\n", (1 - f->zoom) * 0.5 * (f->max.re - f->min.re) * (y / (double)HEIGHT)); 
+	printf("	%f\n", (1 - f->zoom) * 0.5 * (f->max.re - f->min.re) * (((double)HEIGHT - y) / (double)HEIGHT)); 
+	printf("	%f\n", (1 - f->zoom) * 0.5 * (f->max.im - f->min.im) * (x / (double)WIDTH)); 
+	printf("	%f\n", (1 - f->zoom) * 0.5 * (f->max.im - f->min.im) * (((double)WIDTH - x) / (double)WIDTH)); 
+	printf("BEFORE	%f\n", f->min.re);
+	printf("BEFORE	%f\n", f->max.re);
+	printf("BEFORE	%f\n", f->min.im);
+	printf("BEFORE	%f\n", f->max.im);
+	f->min.re += (1 - f->zoom) * 0.5 * (f->max.re - f->min.re) * (y / (double)HEIGHT);
+	f->max.re -= (1 - f->zoom) * 0.5 * (f->max.re - f->min.re) * (((double)HEIGHT - y) / (double)HEIGHT);
+	f->min.im += (1 - f->zoom) * 0.5 * (f->max.im - f->min.im) * (x / (double)WIDTH);
+	f->max.im -= (1 - f->zoom) * 0.5 * (f->max.im - f->min.im) * (((double)WIDTH - x) / (double)WIDTH);
+	printf("AFTER	%f\n", f->min.re);
+	printf("AFTER	%f\n", f->max.re);
+	printf("AFTER	%f\n", f->min.im);
+	printf("AFTER	%f\n", f->max.im);
 	printf("zoom: %f\n", f->zoom); 
 	draw_fractal(f);
 	return (0);
