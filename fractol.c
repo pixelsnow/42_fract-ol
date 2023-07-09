@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 22:01:42 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 22:06:39 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,7 @@ int	count_iterations_julia(int iterations, t_complex k, t_complex c)
 	return (0);
 }
 
-void	set_limits(t_fractol *f)
-{
-	f->scale.re = (f->max.re - f->min.re) / (WIDTH - 1);
-	f->scale.im = (f->max.im - f->min.im) / (HEIGHT - 1);
-}
-
-void	set_julia_scale(t_fractol *f)
+void	set_scale(t_fractol *f)
 {
 	f->scale.re = (f->max.re - f->min.re) / (WIDTH - 1);
 	f->scale.im = (f->max.im - f->min.im) / (HEIGHT - 1);
@@ -72,7 +66,7 @@ void	draw_julia(t_fractol *f)
 	int			escape_count;
 	t_complex	c;
 
-	set_julia_scale(f);
+	set_scale(f);
 	y = 0;
 	while (y < HEIGHT)
 	{
@@ -101,7 +95,7 @@ void	draw_mandelbrot(t_fractol *f)
 	t_complex	c;
 
 	// is scale used anywhere else, should it be local to this function?
-	set_limits(f);
+	set_scale(f);
 	y = 0;
 	while (y < HEIGHT)
 	{
@@ -139,7 +133,6 @@ void	draw_fractal(t_fractol *fractol)
 void	init_fractol_mlx(t_fractol *fractol)
 {
 	fractol->mlx = mlx_init();
-	// identifier of the connection to the graphics server
 	fractol->win = mlx_new_window(fractol->mlx, WIDTH, HEIGHT, "fractol");
 	mlx_hook(fractol->win, 17, 0, close_hook, fractol);
 	mlx_hook(fractol->win, 4, 0, zoom, fractol);
@@ -156,17 +149,10 @@ int	main(int ac, char **av)
 {
 	t_fractol	fractol;
 
-	// TODO: handle arguments
 	if (parse_args(ac, av, &fractol))
 		return (1);
-	//print_instructions();
-	//fractol.k = init_complex(0.26, 0.0016);
 	init_fractol_mlx(&fractol);
-	//draw_mandelbrot(&fractol.img, 50);
 	draw_fractal(&fractol);
-	/* mlx_hook(fractol.win, 17, 0, close_hook, &fractol); // weird magic
-	mlx_mouse_hook(fractol.win, simple_mouse_hook, &fractol);
-	mlx_hook(fractol.win, 6, 0, mouse_hook, &fractol); */
-	mlx_loop(fractol.mlx); // draws, opens the window, manages events
+	mlx_loop(fractol.mlx);
 	return (0);
 }

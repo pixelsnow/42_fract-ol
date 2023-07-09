@@ -6,12 +6,11 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 20:58:35 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 21:49:41 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 22:04:39 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-#include <stdio.h>
 
 int	close_hook(int button, t_fractol *v)
 {
@@ -43,10 +42,8 @@ int	zoom(int code, int x, int y, t_fractol *f)
 	double	zoom;
 	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT || (code != 4 && code != 5))
 		return (0);
-	printf("zoom: %d %d %d\n", code, x, y);
 	if (!f->k_fixed)
 		set_julia_k(x, y, f);
-	printf("%f %f\n", f->k.re, f->k.im); 
 	if (code == 4)
 		zoom = 1.25;
 	else
@@ -94,7 +91,7 @@ void	shift_colors(t_fractol *fractol)
 
 int	keyboard_hook(int code, t_fractol *fractol)
 {
-	printf("%i\n", code);
+	//printf("%i\n", code);
 
 	if (code == ESC)
 		exit(0);
