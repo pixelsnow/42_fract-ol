@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 18:42:33 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:49:06 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,9 +255,9 @@ int	zoom(int code, int x, int y, t_fractol *f)
 		set_julia_k(x, y, f);
 	printf("%f %f\n", f->k.re, f->k.im); 
 	if (code == 4)
-		f->zoom = 1.1;
+		f->zoom = 1.25;
 	else if (code == 5)
-		f->zoom = 0.9;
+		f->zoom = 0.8;
 	f->min.re += (1 - f->zoom) * 0.5 * (f->max.re - f->min.re) * (x / (double)WIDTH);
 	f->max.re -= (1 - f->zoom) * 0.5 * (f->max.re - f->min.re) * (((double)WIDTH - x) / (double)WIDTH);
 	f->min.im += (1 - f->zoom) * 0.5 * (f->max.im - f->min.im) * (((double)HEIGHT - y) / (double)HEIGHT);
@@ -272,13 +272,23 @@ void	move_fractol(int code, t_fractol *fractol)
 	(void)fractol;
 	if (code == ARROW_RIGHT)
 	{
-		fractol->min.re += 0.1 * fractol->zoom;
-		fractol->max.re += 0.1 * fractol->zoom;
+		fractol->min.re += 0.1 * (fractol->max.re - fractol->min.re) / 1;
+		fractol->max.re += 0.1 * (fractol->max.re - fractol->min.re) / 1;
 	}
 	else if (code == ARROW_LEFT)
 	{
-		fractol->min.re -= 0.1 * fractol->zoom;
-		fractol->max.re -= 0.1 * fractol->zoom;
+		fractol->min.re -= 0.1 * (fractol->max.re - fractol->min.re) / 1;
+		fractol->max.re -= 0.1 * (fractol->max.re - fractol->min.re) / 1;
+	}
+	else if (code == ARROW_UP)
+	{
+		fractol->min.im += 0.1 * (fractol->max.im - fractol->min.im) / 1;
+		fractol->max.im += 0.1 * (fractol->max.im - fractol->min.im) / 1;
+	}
+	else if (code == ARROW_DOWN)
+	{
+		fractol->min.im -= 0.1 * (fractol->max.im - fractol->min.im) / 1;
+		fractol->max.im -= 0.1 * (fractol->max.im - fractol->min.im) / 1;
 	}
 	draw_fractal(fractol);
 }
