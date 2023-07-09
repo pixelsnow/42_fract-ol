@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 20:31:32 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/09 21:54:00 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ typedef struct s_fractol {
 	t_data		img;
 	void		*mlx;
 	void		*win;
-	t_type		type; // fractal type
+	t_type		type;
 	int			color;
 	int			iter;
-	int			k_fixed;
+	int			k_fixed; // for julia
 	t_complex	k; // for julia
 	t_complex	min;
 	t_complex	max;
@@ -72,5 +72,13 @@ double		ft_atof(char *str);
 t_complex	init_complex(double re, double im);
 int			rgb_to_int(int r, int g, int b);
 void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
+int			get_colour(int color, int iterations, int iteration_count);
+int			parse_args(int ac, char **av, t_fractol	*fractol);
+int			keyboard_hook(int code, t_fractol *fractol);
+void		move_fractol(int code, t_fractol *fractol);
+int			zoom(int code, int x, int y, t_fractol *f);
+int			julia_mouse_hook(int x, int y, t_fractol *fractol);
+int			close_hook(int button, t_fractol *v);
+void		draw_fractal(t_fractol *fractol);
 
 #endif

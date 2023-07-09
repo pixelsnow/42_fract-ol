@@ -6,7 +6,7 @@
 #    By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/02 20:54:01 by vvagapov          #+#    #+#              #
-#    Updated: 2023/07/09 20:18:40 by vvagapov         ###   ########.fr        #
+#    Updated: 2023/07/09 21:04:10 by vvagapov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,10 @@ NAME = fractol
 SRC = fractol.c \
 	atof.c \
 	utils.c \
-	graphic_utils.c
+	graphic_utils.c \
+	colors.c \
+	input.c \
+	controls.c
 
 OBJ = $(SRC:%.c=%.o)
 
