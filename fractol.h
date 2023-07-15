@@ -6,15 +6,15 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 21:54:00 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/15 14:18:56 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-# define WIDTH			400
-# define HEIGHT			400
+# define WIDTH			500
+# define HEIGHT			500
 
 # define ARROW_UP		126
 # define ARROW_DOWN		125
@@ -24,7 +24,7 @@
 # define SPACE			49
 # define C				8
 
-# define ITER			50
+# define ITER			80
 
 # include <mlx.h>
 # include <unistd.h>
@@ -51,7 +51,8 @@ typedef struct s_complex {
 
 typedef enum {
   MANDELBROT,
-  JULIA
+  JULIA,
+  BURNING_SHIP
 } t_type;
 
 typedef struct s_fractol {
@@ -61,8 +62,8 @@ typedef struct s_fractol {
 	t_type		type;
 	int			color;
 	int			iter;
-	int			k_fixed; // for julia
-	t_complex	k; // for julia
+	int			k_fixed;
+	t_complex	k;
 	t_complex	min;
 	t_complex	max;
 	t_complex	scale;

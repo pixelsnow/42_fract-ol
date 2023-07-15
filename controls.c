@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 20:58:35 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 22:04:39 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/15 14:17:59 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,6 @@ void	shift_colors(t_fractol *fractol)
 
 int	keyboard_hook(int code, t_fractol *fractol)
 {
-	//printf("%i\n", code);
-
 	if (code == ESC)
 		exit(0);
 	else if (code == ARROW_UP || code == ARROW_DOWN || code == ARROW_LEFT || code == ARROW_RIGHT)

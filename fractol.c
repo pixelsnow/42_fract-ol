@@ -6,27 +6,28 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 20:47:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 22:06:39 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/15 14:17:48 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-#include <stdio.h>
 
-int	count_iterations_mandelbrot(int iterations, t_complex c)
+int	count_iterations_mandelbrot(int iterations, t_complex c, t_type type)
 {
 	int			iter;
 	t_complex	z;
 	t_complex	z_parts_sq;
 
-	z = init_complex(c.re, c.im);
+	z = init_complex(c.re, -c.im);
 	iter = 0;
 	while (iter < iterations)
 	{
+		if (type == BURNING_SHIP)
+			z = init_complex(fabs(z.re), fabs(z.im));
 		z_parts_sq = init_complex(pow(z.re, 2), pow(z.im, 2));
 		if (z_parts_sq.re + z_parts_sq.im > 4)
 			return (iter);
-		z.im = 2 * z.re * z.im + c.im;
+		z.im = 2 * z.re * z.im - c.im;
 		z.re = z_parts_sq.re - z_parts_sq.im + c.re;
 		iter++;
 	}
@@ -86,7 +87,6 @@ void	draw_julia(t_fractol *f)
 	}
 }
 
-// TODO: refactor to only take in fractol object
 void	draw_mandelbrot(t_fractol *f)
 {
 	int			y;
@@ -94,7 +94,6 @@ void	draw_mandelbrot(t_fractol *f)
 	int			escape_count;
 	t_complex	c;
 
-	// is scale used anywhere else, should it be local to this function?
 	set_scale(f);
 	y = 0;
 	while (y < HEIGHT)
@@ -104,7 +103,7 @@ void	draw_mandelbrot(t_fractol *f)
 		while (x < WIDTH)
 		{
 			c.re = f->min.re + x * f->scale.re;
-			escape_count = count_iterations_mandelbrot(f->iter, c);
+			escape_count = count_iterations_mandelbrot(f->iter, c, f->type);
 			if (escape_count)
 				my_mlx_pixel_put(&f->img, x, y, get_colour(f->color, f->iter,
 						escape_count));
@@ -123,10 +122,14 @@ void	draw_fractal(t_fractol *fractol)
 	{
 		draw_julia(fractol);
 	}
-	else if (fractol->type == MANDELBROT)
+	else if (fractol->type == MANDELBROT || fractol->type == BURNING_SHIP)
 	{
 		draw_mandelbrot(fractol);
 	}
+/* 	else if (fractol->type == BURNING_SHIP)
+	{
+		draw_burning_ship(fractol);
+	} */
 	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img.img, 0, 0);
 }
 
