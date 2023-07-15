@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   controls.c                                         :+:      :+:    :+:   */
+/*   controls_keyboard.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/09 20:58:35 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/15 14:17:59 by vvagapov         ###   ########.fr       */
+/*   Created: 2023/07/15 15:06:50 by vvagapov          #+#    #+#             */
+/*   Updated: 2023/07/15 16:59:52 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,44 +19,7 @@ int	close_hook(int button, t_fractol *v)
 	exit(0);
 }
 
-static void	set_julia_k(int x, int y, t_fractol *fractol)
-{
-	fractol->k.re = fractol->min.re + x * fractol->scale.re;
-	fractol->k.im = fractol->max.im - y * fractol->scale.im;
-}
-
-int	julia_mouse_hook(int x, int y, t_fractol *fractol)
-{
-	// check limits
-	if (fractol->k_fixed)
-		return (0);
-	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT)
-		return (0);
-	set_julia_k(x, y, fractol);
-	draw_fractal(fractol);
-	return (0);
-}
-
-int	zoom(int code, int x, int y, t_fractol *f)
-{
-	double	zoom;
-	if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT || (code != 4 && code != 5))
-		return (0);
-	if (!f->k_fixed)
-		set_julia_k(x, y, f);
-	if (code == 4)
-		zoom = 1.25;
-	else
-		zoom = 0.8;
-	f->min.re += (1 - zoom) * (f->max.re - f->min.re) * (x / (double)WIDTH);
-	f->max.re -= (1 - zoom) * (f->max.re - f->min.re) * (((double)WIDTH - x) / (double)WIDTH);
-	f->min.im += (1 - zoom) * (f->max.im - f->min.im) * (((double)HEIGHT - y) / (double)HEIGHT);
-	f->max.im -= (1 - zoom) * (f->max.im - f->min.im) * (y / (double)HEIGHT);
-	draw_fractal(f);
-	return (0);
-}
-
-void	move_fractol(int code, t_fractol *fractol)
+static void	move_fractol(int code, t_fractol *fractol)
 {
 	(void)code;
 	(void)fractol;
@@ -83,9 +46,22 @@ void	move_fractol(int code, t_fractol *fractol)
 	draw_fractal(fractol);
 }
 
-void	shift_colors(t_fractol *fractol)
+static void	shift_colors(t_fractol *fractol)
 {
 	fractol->color = (fractol->color + 1) % 3;
+	draw_fractal(fractol);
+}
+
+static void	change_iterations(int code, t_fractol *fractol)
+{
+	if (code == MINUS || code == MINUS_KEYPAD)
+		fractol->iter -= 10;
+	else
+		fractol->iter += 10;
+	if (fractol->iter > 255)
+		fractol->iter = 255;
+	else if (fractol->iter < 2)
+		fractol->iter = 2;
 	draw_fractal(fractol);
 }
 
@@ -93,12 +69,16 @@ int	keyboard_hook(int code, t_fractol *fractol)
 {
 	if (code == ESC)
 		exit(0);
-	else if (code == ARROW_UP || code == ARROW_DOWN || code == ARROW_LEFT || code == ARROW_RIGHT)
+	else if (code == ARROW_UP || code == ARROW_DOWN || code == ARROW_LEFT
+		|| code == ARROW_RIGHT)
 		move_fractol(code, fractol);
 	else if (fractol->type == JULIA && code == SPACE)
 		fractol->k_fixed = !fractol->k_fixed;
 	else if (code == C)
 		shift_colors(fractol);
+	else if (code == PLUS || code == MINUS || code == PLUS_KEYPAD
+		|| code == MINUS_KEYPAD)
+		change_iterations(code, fractol);
 	(void)fractol;
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 22:28:43 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/15 14:18:56 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/15 16:59:35 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,12 @@
 # define ESC			53
 # define SPACE			49
 # define C				8
+# define PLUS			24
+# define MINUS			27
+# define PLUS_KEYPAD	69
+# define MINUS_KEYPAD	78
 
-# define ITER			80
+# define ITER			50
 
 # include <mlx.h>
 # include <unistd.h>
@@ -49,11 +53,11 @@ typedef struct s_complex {
 	double	im;
 }				t_complex;
 
-typedef enum {
-  MANDELBROT,
-  JULIA,
-  BURNING_SHIP
-} t_type;
+typedef enum e_type {
+	MANDELBROT,
+	JULIA,
+	BURNING_SHIP
+}				t_type;
 
 typedef struct s_fractol {
 	t_data		img;
@@ -76,10 +80,13 @@ void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
 int			get_colour(int color, int iterations, int iteration_count);
 int			parse_args(int ac, char **av, t_fractol	*fractol);
 int			keyboard_hook(int code, t_fractol *fractol);
-void		move_fractol(int code, t_fractol *fractol);
 int			zoom(int code, int x, int y, t_fractol *f);
 int			julia_mouse_hook(int x, int y, t_fractol *fractol);
 int			close_hook(int button, t_fractol *v);
 void		draw_fractal(t_fractol *fractol);
+int			validate_julia_args(int ac, char **av);
+void		print_instructions(void);
+void		draw_mandelbrot(t_fractol *f);
+void		draw_julia(t_fractol *f);
 
 #endif

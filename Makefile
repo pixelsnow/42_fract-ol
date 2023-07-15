@@ -6,7 +6,7 @@
 #    By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/02 20:54:01 by vvagapov          #+#    #+#              #
-#    Updated: 2023/07/09 21:04:10 by vvagapov         ###   ########.fr        #
+#    Updated: 2023/07/15 15:32:26 by vvagapov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,13 +14,18 @@ NAME = fractol
 
 SRC = fractol.c \
 	atof.c \
-	utils.c \
-	graphic_utils.c \
 	colors.c \
+	controls_keyboard.c \
+	controls_mouse.c \
+	fractals.c \
+	graphic_utils.c \
 	input.c \
-	controls.c
+	utils.c \
+	validation.c
 
 OBJ = $(SRC:%.c=%.o)
+
+HEADER = fractol.h
 
 LIBFT = libft/libft.a
 LIBFTDIR = libft
@@ -31,7 +36,7 @@ MLX = -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(HEADER)
 	cc $(INC) $(SRC) $(MLX) -o $(NAME)
 
 %.o: %.c

@@ -6,7 +6,7 @@
 /*   By: vvagapov <vvagapov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 20:39:31 by vvagapov          #+#    #+#             */
-/*   Updated: 2023/07/09 20:41:28 by vvagapov         ###   ########.fr       */
+/*   Updated: 2023/07/15 14:53:26 by vvagapov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ static int	get_colour_1(int iterations, int iteration_count)
 int	get_colour(int color, int iterations, int iteration_count)
 {
 	if (color == 0)
-		return get_colour_bw(iterations, iteration_count);
+		return (get_colour_bw(iterations, iteration_count));
 	if (color == 1)
-		return get_colour_wb(iterations, iteration_count);
-	return get_colour_1(iterations, iteration_count);
+		return (get_colour_wb(iterations, iteration_count));
+	return (get_colour_1(iterations, iteration_count));
 }
