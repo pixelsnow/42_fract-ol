@@ -1,7 +1,5 @@
 # Fract’ol
 
-🚧 In progress 🚧
+Creatng graphically beautiful fractals. Featuring Julia, Mandelbrot and Burning ship fractals.
 
-My version of **fract’ol** School 42 project @ [Hive Helsinki](https://www.hive.fi/en/)
-
-Creatng graphically beautiful fractals.
+C, MiniLibX, Makefile.
